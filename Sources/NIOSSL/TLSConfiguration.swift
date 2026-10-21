@@ -466,6 +466,12 @@ public struct TLSConfiguration {
     /// Whether renegotiation is supported.
     public var renegotiationSupport: NIORenegotiationSupport
 
+    /// Whether a client checks the keyUsage extension of an RSA leaf certificate against the TLS 1.2 key exchange
+    /// (`SSL_set_enforce_rsa_key_usage`). Defaults to `true`. Set to `false` to accept certificates without
+    /// `digitalSignature` with ECDHE-RSA, as OpenSSL does (e.g. self-signed Windows RDP certificates).
+    /// TLS 1.3 always enforces the check.
+    public var enforceRSAKeyUsage: Bool = true
+
     /// Send the CA names derived from the ``trustRoots`` for client authentication.
     /// This instructs the client which identities can be used by evaluating what CA the identity certificate was issued from.
     public var sendCANameList: Bool
@@ -595,6 +601,7 @@ extension TLSConfiguration {
 
         return self.minimumTLSVersion == comparing.minimumTLSVersion
             && self.maximumTLSVersion == comparing.maximumTLSVersion && self.cipherSuites == comparing.cipherSuites
+            && self.enforceRSAKeyUsage == comparing.enforceRSAKeyUsage
             && self.curves == comparing.curves && self.verifySignatureAlgorithms == comparing.verifySignatureAlgorithms
             && self.signingSignatureAlgorithms == comparing.signingSignatureAlgorithms
             && self.certificateVerification == comparing.certificateVerification
@@ -615,6 +622,7 @@ extension TLSConfiguration {
     public func bestEffortHash(into hasher: inout Hasher) {
         hasher.combine(minimumTLSVersion)
         hasher.combine(maximumTLSVersion)
+        hasher.combine(enforceRSAKeyUsage)
         hasher.combine(cipherSuites)
         hasher.combine(curves)
         hasher.combine(verifySignatureAlgorithms)

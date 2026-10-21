@@ -77,6 +77,9 @@ internal final class SSLConnection {
         CNIOBoringSSL_SSL_set_ex_data(self.ssl, sslConnectionExDataIndex, pointerToSelf)
 
         self.setRenegotiationSupport(self.parentContext.configuration.renegotiationSupport)
+        if !self.parentContext.configuration.enforceRSAKeyUsage {
+            CNIOBoringSSL_SSL_set_enforce_rsa_key_usage(self.ssl, 0)
+        }
     }
 
     deinit {

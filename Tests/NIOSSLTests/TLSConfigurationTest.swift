@@ -1224,6 +1224,35 @@ class TLSConfigurationTest: XCTestCase {
         XCTAssertFalse(config.bestEffortEquals(differentConfig))
     }
 
+    // Fork: enforceRSAKeyUsage
+    func testEnforceRSAKeyUsageDefaultsToTrue() {
+        XCTAssertTrue(TLSConfiguration.makeClientConfiguration().enforceRSAKeyUsage)
+        XCTAssertTrue(
+            TLSConfiguration.makeServerConfiguration(
+                certificateChain: [],
+                privateKey: .privateKey(TLSConfigurationTest.key1)
+            ).enforceRSAKeyUsage
+        )
+    }
+
+    func testEnforceRSAKeyUsageIsPartOfBestEffortEqualsAndHash() {
+        let config = TLSConfiguration.makeClientConfiguration()
+        var differentConfig = config
+        differentConfig.enforceRSAKeyUsage = false
+        XCTAssertFalse(config.bestEffortEquals(differentConfig))
+        XCTAssertFalse(differentConfig.bestEffortEquals(config))
+
+        var hasher = Hasher()
+        var hasher2 = Hasher()
+        config.bestEffortHash(into: &hasher)
+        differentConfig.bestEffortHash(into: &hasher2)
+        XCTAssertNotEqual(hasher.finalize(), hasher2.finalize())
+
+        var sameConfig = differentConfig
+        sameConfig.enforceRSAKeyUsage = false
+        XCTAssertTrue(differentConfig.bestEffortEquals(sameConfig))
+    }
+
     func testDifferentCallbacksNotEqual() {
         var config = TLSConfiguration.makeServerConfiguration(
             certificateChain: [],

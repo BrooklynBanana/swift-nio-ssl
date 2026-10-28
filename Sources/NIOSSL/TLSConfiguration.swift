@@ -10,6 +10,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+// Modified for Swift Connection Manager (fork BrooklynBanana/swift-nio-ssl, 2026-10-21):
+// added the option `enforceRSAKeyUsage` (including equality and hashing).
+//
 //===----------------------------------------------------------------------===//
 
 @_implementationOnly import CNIOBoringSSL

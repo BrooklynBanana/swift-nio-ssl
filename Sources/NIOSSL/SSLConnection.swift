@@ -10,6 +10,9 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 //
+// Modified for Swift Connection Manager (fork BrooklynBanana/swift-nio-ssl, 2026-10-21):
+// applies `TLSConfiguration.enforceRSAKeyUsage` via `SSL_set_enforce_rsa_key_usage`.
+//
 //===----------------------------------------------------------------------===//
 
 @_implementationOnly import CNIOBoringSSL
